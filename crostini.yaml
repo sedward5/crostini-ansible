@@ -1,0 +1,32 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+
+  - name: Check if Aptitude is installed
+    stat:
+      path: /usr/bin/aptitude
+    register: stat_result
+
+  - name: Aptitude is required
+    command: apt-get -y install aptitude
+    when: stat_result.stat.exists == False
+
+  - name: Update apt cache and upgrade packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: Install packages
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - dnsutils
+      - tmux
+      - nmap
+      - jq
+      - yara
+      - whois
+      - inetutils-ping
+      - hping3
