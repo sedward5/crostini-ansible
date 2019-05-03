@@ -22,15 +22,17 @@
       name: "{{ packages }}"
     vars:
       packages:
+      - bash-completion
+      - binutils
       - dnsutils
-      - tmux
-      - nmap
-      - jq
-      - yara
-      - whois
-      - inetutils-ping
       - hping3
       - htop
+      - inetutils-ping
+      - jq
+      - nmap
+      - tmux
+      - whois
+      - yara
         
   - name: Install VSCode
     apt:
