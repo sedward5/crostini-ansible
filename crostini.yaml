@@ -12,6 +12,16 @@
     command: apt-get -y install aptitude
     when: stat_result.stat.exists == False
 
+  - name: Add gcloud repo
+    lineinfile:
+      dest: /etc/apt/sources.list.d/google-cloud-sdk.list
+      line: 'deb http://packages.cloud.google.com/apt cloud-sdk-stretch main'
+      create: yes
+
+  - name: Add gcloud repo key
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg 
+
   - name: Update apt cache and upgrade packages
     apt:
       upgrade: yes
@@ -25,15 +35,28 @@
       - bash-completion
       - binutils
       - dnsutils
+      - google-cloud-sdk
       - hping3
       - htop
       - inetutils-ping
       - jq
       - nmap
+      - python-pip
+      - python3-pip
       - tmux
+      - virtualenv
       - whois
       - yara
         
+  - name: Install AWS CLI
+    pip:
+      name: awscli
+
   - name: Install VSCode
     apt:
       deb: https://go.microsoft.com/fwlink/?LinkID=760868
+
+  - name: Clone YaraRules
+    git:
+      repo: https://github.com/Yara-Rules/rules.git
+      dest: /opt/yara
