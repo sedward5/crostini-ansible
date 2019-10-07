@@ -43,6 +43,7 @@
       - nmap
       - python-pip
       - python3-pip
+      - tree
       - tmux
       - virtualenv
       - whois
@@ -60,3 +61,8 @@
     git:
       repo: https://github.com/Yara-Rules/rules.git
       dest: /opt/yara
+
+  - name: Clone .tmux
+    git:
+      repo: https://github.com/gpakosz/.tmux.git
+      dest: tmux
