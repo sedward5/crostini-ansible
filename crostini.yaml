@@ -45,13 +45,16 @@
       - python3-pip
       - tree
       - tmux
+      - vim-nox
       - virtualenv
       - whois
       - yara
         
   - name: Install AWS CLI
     pip:
-      name: awscli
+      name: 
+        - awscli
+        - powerline-status
 
   - name: Install VSCode
     apt:
@@ -65,4 +68,44 @@
   - name: Clone .tmux
     git:
       repo: https://github.com/gpakosz/.tmux.git
-      dest: tmux
+      dest: /opt/tmux
+
+  - name: find home directories
+    find:
+      paths: /home
+      file_type: directory
+    register: home_directories
+
+  - name: Copy .tmux files
+    copy:
+      src: "/opt/tmux/{{ item[0] }}"
+      dest: "{{ item[1].path }}"
+    with_nested:
+      - [ '.tmux.conf', '.tmux.conf.local']
+      - "{{ home_directories.files }}"
+
+  - name: Write a file like my vimrc
+    blockinfile:
+      dest: "{{ item.path }}/.vimrc"
+      create: yes
+      marker: "\" {mark} ANSIBLE MANAGED BLOCK"
+      block: |
+        set nomodeline
+        syntax enable
+        colorscheme slate
+        set  rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
+        set laststatus=2
+        set t_Co=256
+    with_items: "{{ home_directories.files }}"
+
+  - name: Uncomment powerline separatetors in tmux conf
+    lineinfile:
+      dest: "{{ item[0].path }}/.tmux.conf.local"
+      regexp: '^#?\s*{{ item[1].key }}.*$'
+      line: "{{ item[1].key }}='{{ item[1].value }}'"
+    with_nested:
+      - "{{ home_directories.files }}"
+      - - { key: 'tmux_conf_theme_left_separator_main', value: '\uE0B0' }
+        - { key: 'tmux_conf_theme_left_separator_sub', value: '\uE0B1' }
+        - { key: 'tmux_conf_theme_right_separator_main', value: '\uE0B2' }
+        - { key: 'tmux_conf_theme_right_separator_sub', value: '\uE0B3' }
