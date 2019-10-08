@@ -98,7 +98,7 @@
         set t_Co=256
     with_items: "{{ home_directories.files }}"
 
-  - name: Uncomment powerline separatetors in tmux conf
+  - name: Uncomment powerline separatetors in .tmux.conf.local
     lineinfile:
       dest: "{{ item[0].path }}/.tmux.conf.local"
       regexp: '^#?\s*{{ item[1].key }}.*$'
@@ -109,3 +109,15 @@
         - { key: 'tmux_conf_theme_left_separator_sub', value: '\uE0B1' }
         - { key: 'tmux_conf_theme_right_separator_main', value: '\uE0B2' }
         - { key: 'tmux_conf_theme_right_separator_sub', value: '\uE0B3' }
+
+  - name: Powerline for .bashrc
+    blockinfile:
+      dest: "{{ item.path }}/.bashrc"
+      block: |
+        if [ -f `which powerline-daemon` ]; then
+          powerline-daemon -q
+          POWERLINE_BASH_CONTINUATION=1
+          POWERLINE_BASH_SELECT=1
+          . /usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh
+        fi
+    with_items: "{{ home_directories.files }}"
