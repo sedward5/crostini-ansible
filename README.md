@@ -9,4 +9,7 @@ sudo ansible-playbook crostini.yaml
 
 # Configuring Terminal
 
-You can configure the the look of the CrOS terminal app by pressing CTRL+SHIFT+P. I've added powerline compatible fonts by changing **Custom CSS URL** to `https://cdn.jsdelivr.net/gh/wernight/powerline-web-fonts@ba4426cb0c0b05eb6cb342c7719776a41e1f2114/PowerlineFonts.css` and **Text Font Family** to `Hack, monospace`
+You can configure the the look of the CrOS terminal app by pressing CTRL+SHIFT+P. I've added powerline compatible fonts by changing the following settings:
+* **Custom CSS URL** to `https://cdn.jsdelivr.net/gh/wernight/powerline-web-fonts@ba4426cb0c0b05eb6cb342c7719776a41e1f2114/PowerlineFonts.css`
+* **Text Font Family** to `Hack, monospace`
+* **Text Font Size** to `14`
