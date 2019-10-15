@@ -43,6 +43,7 @@
       - nmap
       - python-pip
       - python3-pip
+      - telnet
       - tree
       - tmux
       - vim-nox
