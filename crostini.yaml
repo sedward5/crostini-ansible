@@ -44,6 +44,7 @@
       - python-pip
       - python3-pip
       - telnet
+      - thefuck
       - tree
       - tmux
       - vim-nox
@@ -70,6 +71,39 @@
     git:
       repo: https://github.com/gpakosz/.tmux.git
       dest: /opt/tmux
+
+  - name: Get latest release of code-server
+    uri:
+      url: https://api.github.com/repos/cdr/code-server/releases/latest
+    register: releases
+
+  - name: Find the latest linux version download url
+    set_fact:
+      releases: "{{ releases.json.assets | selectattr('name', 'match', '.*-linux') | list }}"
+
+  - name: Download code-server
+    get_url:                   
+      url: "{{ releases[0].browser_download_url }}"
+      dest: /opt/code-server-latest.tar.gz 
+
+  - name: Unarchive tarball
+    unarchive:
+      src: /opt/code-server-latest.tar.gz
+      dest: /opt/
+
+  - name: Find code-server binary
+    find:
+      recurse: yes
+      paths: /opt/
+      pattern: 'code-server'
+      file_type: file
+    register: code
+
+  - name: Copy code-server to /opt
+    copy:
+      src: "{{ code.files[0].path }}"
+      dest: /opt/
+      mode: '0755'
 
   - name: find home directories
     find:
@@ -121,4 +155,6 @@
           POWERLINE_BASH_SELECT=1
           . /usr/local/lib/python2.7/dist-packages/powerline/bindings/bash/powerline.sh
         fi
+        alias code-server="echo 'Click here http://penguin.linux.test:8080';/opt/code-server -H -p 8080"
+        eval $(thefuck --alias)
     with_items: "{{ home_directories.files }}"
