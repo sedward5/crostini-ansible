@@ -145,6 +145,13 @@
         - { key: 'tmux_conf_theme_right_separator_main', value: '\uE0B2' }
         - { key: 'tmux_conf_theme_right_separator_sub', value: '\uE0B3' }
 
+  - name: Add weather to .tmux.conf.local
+    lineinfile:
+      dest: "{{ item.path }}/.tmux.conf.local"
+      regexp: 'tmux_conf_theme_status_right=.*$'
+      line: 'tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized}  #(curl wttr.in/Ann&20Arbor?format=3)  , %R , %d %b | #{username}#{root} | #{hostname} '
+    with_items: "{{ home_directories.files }}"
+
   - name: Powerline for .bashrc
     blockinfile:
       dest: "{{ item.path }}/.bashrc"
